@@ -1,11 +1,11 @@
-.info {
+.blue {
   color: blue;
 }
 
-.warn {
-  color: red;
+.orange {
+  color: orange;
 }
 
-.error {
+.red {
   color: red;
 }

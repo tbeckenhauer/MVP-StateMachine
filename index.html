@@ -1,21 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="carApp">
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script type="text/javascript" src="//code.jquery.com/jquery-2.2.3.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.20/angular.min.js"></script>
   <script src="script.js"></script>
   <link rel="stylesheet" href="styles.css" />
 </head>
 
-<body>
-  <input type=button id=insertKeys value="Insert Keys">
-  <input type=button id=accelerate value="Accelerate">
-  <input type=button id=deAccelerate value="De-Accelerate">
-  <input type=button id=removeKeys value="Remove Keys">
-  <div id=log>
+<body ng-controller='carController'>
+  <dashboard>
+    <dashboard-button cmd-val="Start" exec-cmd="acceptCommand('startEngine')"></dashboard-button>
+    <dashboard-button cmd-val="Stop" exec-cmd="acceptCommand('turnOffEngine')"></dashboard-button>
+    <dashboard-button cmd-val="Push" exec-cmd="acceptCommand('pushForward')"></dashboard-button>
+    <dashboard-button cmd-val="Pull" exec-cmd="acceptCommand('pullBack')"></dashboard-button>
+  </dashboard>
+  <messages msg-array="messageArray"></messages>
 </body>
 
 </html>
