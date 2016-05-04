@@ -2,19 +2,33 @@
 <html ng-app="carApp">
 
 <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link data-require="bootstrap-css@3.3.6" data-semver="3.3.6" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css" />
   <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.20/angular.min.js"></script>
   <script src="script.js"></script>
   <link rel="stylesheet" href="styles.css" />
 </head>
 
-<body ng-controller='carController'>
-  <dashboard>
+<body ng-controller="carController">
+  <label style="display:block">
+    Use Bootstrap <input type=checkbox ng-model="isBootstrap">
+    </label>
+  <dashboard ng-hide="isBootstrap">
     <dashboard-button cmd-val="Start" exec-cmd="acceptCommand('startEngine')"></dashboard-button>
     <dashboard-button cmd-val="Stop" exec-cmd="acceptCommand('turnOffEngine')"></dashboard-button>
     <dashboard-button cmd-val="Push" exec-cmd="acceptCommand('pushForward')"></dashboard-button>
     <dashboard-button cmd-val="Pull" exec-cmd="acceptCommand('pullBack')"></dashboard-button>
   </dashboard>
-  <messages msg-array="messageArray"></messages>
+  <messages ng-hide="isBootstrap" class="scrolling" msg-array="messageArray"></messages>
+  <dashboard-bootstrap ng-show="isBootstrap">
+    <dashboard-button-bootstrap cmd-val="Start" exec-cmd="acceptCommand('startEngine')"> </dashboard-button-bootstrap>
+    <dashboard-button-bootstrap cmd-val="Stop" exec-cmd="acceptCommand('turnOffEngine')"></dashboard-button-bootstrap>
+    <dashboard-button-bootstrap cmd-val="Push" exec-cmd="acceptCommand('pushForward')"> </dashboard-button-bootstrap>
+    <dashboard-button-bootstrap cmd-val="Pull" exec-cmd="acceptCommand('pullBack')"> </dashboard-button-bootstrap>
+  </dashboard-bootstrap>
+  <messages-bootstrap ng-show="isBootstrap" class="scrolling" msg-array="messageArray"></messages-bootstrap>
 </body>
 
 </html>
