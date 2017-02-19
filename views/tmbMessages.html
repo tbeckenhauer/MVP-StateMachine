@@ -1,0 +1,20 @@
+<ng-switch on="uistyle">
+    <div ng-switch-when="material">
+        <md-list flex>
+            <md-list-item class="md-1-line"
+                          ng-click="null"
+                          ng-repeat="msg in msgArray track by $index"
+                          md-colors="messageLevel[msg.color]">
+                <p md-colors="messageLevel[msg.color]">{{msg.message}}</p>
+            </md-list-item>
+        </md-list>
+    </div>
+    <ul ng-switch-when="bootstrap" class="list-group">
+        <li class="list-group-item" ng-class="messageLevel[msg.color]" ng-repeat="msg in msgArray track by $index">
+            {{msg.message}}
+        </li>
+    </ul>
+    <div ng-switch-default>
+        <div ng-repeat="msg in msgArray track by $index" ng-class="messageLevel[msg.color]">{{msg.message}}</div>
+    </div>
+</ng-switch>

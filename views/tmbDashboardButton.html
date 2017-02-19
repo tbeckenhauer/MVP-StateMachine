@@ -1,0 +1,14 @@
+<ng-switch on="uistyle">
+    <span ng-switch-when="material">
+        <md-button class="md-raised"
+                   ng-click="execCmd()">
+            {{cmdVal}}
+        </md-button>
+    </span>
+    <button ng-switch-when="bootstrap"
+            type="button"
+            class="btn btn-default"
+            ng-click="execCmd()">{{cmdVal}}
+    </button>
+    <input ng-switch-default type="button" ng-click="execCmd()" value="{{cmdVal}}">
+</ng-switch>
