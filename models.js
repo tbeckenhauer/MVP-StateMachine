@@ -150,7 +150,7 @@ angular.module('carApp')
         var handlers = [];
 
         protoVehicle.prototype.set = function(newState) {
-            var newMessage = 'setting vehical to state:' + newState;
+            var newMessage = 'setting vehicle to state:' + newState;
             setCurrentState(newState);
             this.log({
                 level: 'info',

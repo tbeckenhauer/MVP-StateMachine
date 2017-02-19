@@ -88,5 +88,5 @@ angular.module('carApp')
                 msgArray: '='
             }
         }
-    }])
+    }]);
 
