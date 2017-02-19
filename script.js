@@ -1,11 +1,12 @@
-angular.module('carApp', []);
+angular.module('carApp', ['ngMaterial']);
 
 angular.module('carApp')
     .directive('tmbDashboard', ['settings', function (settings) {
         return {
             controller: function ($scope) {
+                $scope.uistyle = settings.uistyle.id;
                 settings.listenTo('uistyle', function(uistyle) {
-                    $scope.uistyle = uistyle;
+                    $scope.uistyle = uistyle.id;
                 });
             },
             replace: true,
@@ -23,13 +24,15 @@ angular.module('carApp')
   .directive('tmbDashboardButton', ['settings', function (settings) {
     return {
       controller: function ($scope) {
+          $scope.uistyle = settings.uistyle.id;
         settings.listenTo('uistyle', function(uistyle) {
-          $scope.uistyle = uistyle;
+          $scope.uistyle = uistyle.id;
         });
       },
       replace: true,
         template: ''+
         '<ng-switch on="uistyle">' +
+            '<span ng-switch-when="material"><md-button class="md-raised" ng-click="execCmd()">{{cmdVal}}</md-button></span>'+
             '<button ng-switch-when="bootstrap" type="button" class="btn btn-default" ng-click="execCmd()">{{cmdVal}}</button>'+
             '<input ng-switch-default type="button" ng-click="execCmd()" value="{{cmdVal}}">'+
         '</ng-switch>',
@@ -42,18 +45,45 @@ angular.module('carApp')
   .directive('tmbMessages', ['settings', function (settings) {
     return {
       controller: function ($scope) {
+          var classMap = {
+              html5: {
+                  info: 'blue',
+                  warn: 'orange',
+                  error: 'red'
+              },
+              bootstrap: {
+                  info: 'list-group-item-info',
+                  warn: 'list-group-item-warning',
+                  error: 'list-group-item-danger'
+              },
+              material: {
+                  info: {color: 'blue-800'},
+                  warn: {color: 'amber-800'},
+                  error: {color: 'red-800'}
+              }
+          };
+          $scope.uistyle = settings.uistyle.id;
+          $scope.messageLevel = classMap[$scope.uistyle];
         settings.listenTo('uistyle', function(uistyle) {
-          $scope.uistyle = uistyle;
+          $scope.uistyle = uistyle.id;
+          $scope.messageLevel = classMap[$scope.uistyle]
         });
       },
       replace: true,
       template: ''+
       '<ng-switch on="uistyle">'+
+          '<div ng-switch-when="material">' +
+              '<md-list flex>' +
+                  '<md-list-item class="md-1-line" ng-click="null" ng-repeat="msg in msgArray track by $index" md-colors="messageLevel[msg.color]">' +
+                      '<p md-colors="messageLevel[msg.color]">{{msg.message}}</p>' +
+                  '</md-list-item>' +
+              '</md-list>'+
+          '</div>'+
           '<ul ng-switch-when="bootstrap" class="list-group">' +
-            '<li class="list-group-item" ng-class="msg.color" ng-repeat="msg in msgArray track by $index">{{msg.message}}</li>' +
+            '<li class="list-group-item" ng-class="messageLevel[msg.color]" ng-repeat="msg in msgArray track by $index">{{msg.message}}</li>' +
           '</ul>'+
           '<div ng-switch-default>' +
-            '<div ng-repeat="msg in msgArray track by $index" ng-class="msg.color">{{msg.message}}</div>' +
+            '<div ng-repeat="msg in msgArray track by $index" ng-class="messageLevel[msg.color]">{{msg.message}}</div>' +
           '</div>'+
       '</ng-switch>',
       scope: {
@@ -64,33 +94,19 @@ angular.module('carApp')
 
 .controller('carController', ['$scope', 'carStateMachine', 'settings', function($scope, carState, settings) {
 
-  $scope.updateUiStyle = function (isBootstrap) {
-      if(isBootstrap) {
-          settings.uistyle = 'bootstrap';
-      } else {
-          settings.uistyle = 'vanilla';
-      }
-  };
+    $scope.possibleUistyles = settings.getPossibleValues('uistyle');
+    $scope.selectedUistyle = settings.uistyle;
+    $scope.updateUiStyle = function () {
+        settings.uistyle = $scope.selectedUistyle;
+    };
 
   $scope.logObj = [];
   $scope.updateLog = function(logArray) {
-    var logToMessageMapStandard = {
-      info: 'blue',
-      warn: 'orange',
-      error: 'red'
-    };
-    var logToMessageMapBootstrap = {
-      info: 'list-group-item-info',
-      warn: 'list-group-item-warning',
-      error: 'list-group-item-danger'
-    };
-
-    var logToMessageMap = $scope.isBootstrap ? logToMessageMapBootstrap : logToMessageMapStandard;
 
     $scope.messageArray = logArray.map(function(logObject) {
       return {
-        color: logToMessageMap[logObject.level],
-        message: logObject.item,
+        color: logObject.level,
+        message: logObject.item
       }
     });
   };
@@ -113,9 +129,15 @@ angular.module('carApp')
         var self = this;
 
         //This is the private storage of properties, and their associated callbacks
+        var possibleUiStyles = [
+            {id: 'html5',     name: 'Retro' },
+            {id: 'bootstrap', name: 'Curved'},
+            {id: 'material',  name: 'Flat' }
+        ];
         var settings = {
             uistyle: {
-                value: 'vanilla',
+                possibleValues: possibleUiStyles,
+                value: possibleUiStyles[2],
                 callbacks : []
             }
         };
@@ -133,10 +155,14 @@ angular.module('carApp')
                     });
                 },
                 get: function() {
-                    return settings[key];
+                    return settings[key].value;
                 }
             });
         });
+
+        self.getPossibleValues = function(property) {
+            return settings[property].possibleValues;
+        };
 
         self.listenTo = function (property, callback) {
             //look up the callbacks of the property and add a new callback.
@@ -234,60 +260,61 @@ angular.module('carApp')
 
 .provider('carStateMachine', [function() {
 
-  var protoVehical = function() {}
+  var protoVehicle = function() {};
   var carLog = [];
-  var vehicalStates = {};
+  var vehicleStates = {};
+  var currentState;
   var getCurrentState = function() {
-    return vehicalStates[currentState];
-  }
+    return vehicleStates[currentState];
+  };
   var setCurrentState = function(state) {
     currentState = state;
 
-  }
+  };
   var handlers = [];
 
-  protoVehical.prototype.set = function(newState) {
+  protoVehicle.prototype.set = function(newState) {
     var newMessage = 'setting vehical to state:' + newState;
     setCurrentState(newState);
     this.log({
       level: 'info',
       item: newMessage
     });
-  }
+  };
 
-  protoVehical.prototype.warn = function(cmd) {
+  protoVehicle.prototype.warn = function(cmd) {
     var newMessage = 'command: ' + cmd + ' in state: ' + currentState + ' is not allowed';
     this.log({
       level: 'warn',
       item: newMessage
     });
-  }
+  };
 
-  protoVehical.prototype.info = function() {
+  protoVehicle.prototype.info = function() {
     var newMessage = 'remaining in state:' + currentState;
     this.log({
       level: 'info',
       item: newMessage
     });
-  }
+  };
 
-  protoVehical.prototype.log = function(newMessage) {
+  protoVehicle.prototype.log = function(newMessage) {
     carLog.unshift(newMessage);
     handlers.forEach(function(handler) {
       handler(carLog);
     });
-  }
+  };
 
-  protoVehical.prototype.addHandler = function(newHandler) {
+  protoVehicle.prototype.addHandler = function(newHandler) {
     handlers.push(newHandler);
   };
 
   this.registerState = function(state, stateConfig, isDefault) {
-    vehicalStates[state] = Object.create(protoVehical.prototype, stateConfig);
+    vehicleStates[state] = Object.create(protoVehicle.prototype, stateConfig);
     if (isDefault) setCurrentState(state);
-  }
+  };
 
   this.$get = [function() {
     return getCurrentState;
   }];
-}])
+}]);
