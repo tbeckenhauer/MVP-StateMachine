@@ -5,20 +5,28 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--jQuery-->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" crossorigin="anonymous"></script>
+    <!--Bootstrap-->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link data-require="bootstrap-css@3.3.6" data-semver="3.3.6" rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css"/>
 
+    <!--Angular-->
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css">
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
-
+    <!--Material-->
     <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+
+    <!--Application Code-->
     <script src="script.js"></script>
     <script src="views/tmbMessages.js"></script>
     <script src="views/tmbDashboard.js"></script>
     <script src="views/tmbDashboardButton.js"></script>
+    <script src="views/tmbDropdown.js"></script>
     <script src="controllers/car.js"></script>
     <script src="models/settingsService.js"></script>
     <script src="models/carStateMachineProvider.js"></script>
@@ -27,13 +35,13 @@
 
 <body ng-controller="carController">
 
-<label style="display:block">
-Select your cars design
-<select ng-model="selectedUistyle"
-        ng-change="updateUiStyle()"
-        ng-options="option.name for option in possibleUistyles">
-</select><br>
-</label>
+<tmb-dropdown
+        label="Interior"
+        current-option="selectedUistyle"
+        on-change="updateUiStyle(id, name)"
+        options="possibleUistyles"
+></tmb-dropdown>
+<br/>
 <tmb-dashboard>
     <tmb-dashboard-button cmd-val="Insert Keys" exec-cmd="acceptCommand('startEngine')"></tmb-dashboard-button>
     <tmb-dashboard-button cmd-val="Remove Keys" exec-cmd="acceptCommand('turnOffEngine')"></tmb-dashboard-button>

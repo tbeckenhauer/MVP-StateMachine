@@ -1,10 +1,13 @@
 angular.module('carApp')
     .controller('carController', ['$scope', 'carStateMachine', 'settings', function($scope, carState, settings) {
 
-        $scope.possibleUistyles = settings.getPossibleValues('uistyle');
         $scope.selectedUistyle = settings.uistyle;
-        $scope.updateUiStyle = function () {
-            settings.uistyle = $scope.selectedUistyle;
+        settings.listenTo('uistyle', function(uistyle) {
+            $scope.selectedUistyle = uistyle;
+        });
+        $scope.possibleUistyles = settings.getPossibleValues('uistyle');
+        $scope.updateUiStyle = function (id, name) {
+            settings.uistyle = {id: id, name: name};
         };
 
         $scope.logObj = [];

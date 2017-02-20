@@ -23,11 +23,20 @@ angular.module('carApp')
         Object.keys(settings).forEach(function(key) {
             Object.defineProperty(self, key, {
                 set: function(value) {
+                    //We are going to look up the correct object.
+                    //All we need the client of this code to get right is the id
+
+                    //find the correct object.
+                    var foundObj = possibleUiStyles.find(function (obj) {
+                        return obj.id === value.id;
+                    });
+
                     //update the property with the new value
-                    settings[key].value = value;
+                    settings[key].value = foundObj;
+
                     //walk through all the callbacks for the property and call each callback
                     settings[key].callbacks.forEach(function(callback) {
-                        callback(value);
+                        callback(foundObj);
                     });
                 },
                 get: function() {
@@ -43,6 +52,8 @@ angular.module('carApp')
         self.listenTo = function (property, callback) {
             //look up the callbacks of the property and add a new callback.
             settings[property].callbacks.push(callback);
+            //TODO
+            // callback(settings[property]);
         };
         return self;
     });
