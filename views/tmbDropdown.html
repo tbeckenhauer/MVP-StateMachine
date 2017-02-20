@@ -1,12 +1,16 @@
 <ng-switch on="uistyle">
-    <label ng-show="uistyle == 'material'" style="display:block">
-        {{label}}
-        <select
-                ng-model="currentOption"
-                ng-change="onChange( currentOption )"
-                ng-options="option.name for option in options">
-        </select>
-    </label>
+    <md-input-container ng-show="uistyle == 'material'">
+        <label>{{label}}:</label>
+        <md-select ng-model="currentOption">
+            <md-option ng-repeat="mOption in options"
+                       ng-value="mOption"
+                       ng-selected="mOption.id == currentOption.id"
+                       ng-click="onChange( mOption )">
+                {{mOption.name}}
+            </md-option>
+        </md-select>
+    </md-input-container>
+
     <div ng-show="uistyle == 'bootstrap'" class="dropdown">
         <button class="btn btn-default dropdown-toggle"
                 type="button"
