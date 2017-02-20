@@ -5,7 +5,7 @@
                           ng-click="null"
                           ng-repeat="msg in msgArray track by $index"
                           md-colors="messageLevel[msg.color]">
-                <p md-colors="messageLevel[msg.color]">{{msg.message}}</p>
+                <h4 md-colors="messageLevel[msg.color]">{{msg.message}}</h4>
             </md-list-item>
         </md-list>
     </div>
