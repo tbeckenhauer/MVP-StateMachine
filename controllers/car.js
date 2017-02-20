@@ -1,6 +1,7 @@
 angular.module('carApp')
     .controller('carController', ['$scope', 'carStateMachine', 'settings', function($scope, carState, settings) {
 
+        //Wire up the Settings-Dropdown
         settings.listenTo('uistyle', function(uistyle) {
             $scope.selectedUistyle = uistyle;
         });
@@ -9,18 +10,7 @@ angular.module('carApp')
             settings.uistyle = {id: id, name: name};
         };
 
-        $scope.logObj = [];
-        $scope.updateLog = function(logArray) {
-
-            $scope.messageArray = logArray.map(function(logObject) {
-                return {
-                    color: logObject.level,
-                    message: logObject.item
-                }
-            });
-        };
-
-        carState().addHandler($scope.updateLog);
+        //Wire up the engine buttons
         $scope.acceptCommand = function(command) {
             var commandMap = {
                 startEngine: 'insertKeys',
@@ -29,6 +19,18 @@ angular.module('carApp')
                 pullBack: 'deAccelerate'
             };
             carState().handleInput(commandMap[command]);
-        }
+        };
+
+        //Wire up the car log
+        carState().addHandler(updateLog);
+        function updateLog(logArray) {
+            $scope.messageArray = logArray.map(function(logObject) {
+                return {
+                    color: logObject.level,
+                    message: logObject.item
+                }
+            });
+        };
+
     }]);
 
