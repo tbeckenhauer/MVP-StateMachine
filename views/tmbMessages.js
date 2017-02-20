@@ -4,9 +4,9 @@ angular.module('carApp')
             controller: function ($scope) {
                 var classMap = {
                     html5: {
-                        info: 'blue',
-                        warn: 'orange',
-                        error: 'red'
+                        info: {color: 'blue'},
+                        warn: {color: 'orange'},
+                        error: {color: 'red'}
                     },
                     bootstrap: {
                         info: 'list-group-item-info',

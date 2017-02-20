@@ -15,6 +15,6 @@
         </li>
     </ul>
     <div ng-switch-default>
-        <div ng-repeat="msg in msgArray track by $index" ng-class="messageLevel[msg.color]">{{msg.message}}</div>
+        <div ng-repeat="msg in msgArray track by $index" ng-style="messageLevel[msg.color]">{{msg.message}}</div>
     </div>
 </ng-switch>
