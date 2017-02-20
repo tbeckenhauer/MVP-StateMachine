@@ -13,7 +13,7 @@ angular.module('carApp')
         var settings = {
             uistyle: {
                 possibleValues: possibleUiStyles,
-                value: possibleUiStyles[1],
+                value: possibleUiStyles[2],
                 callbacks : []
             }
         };
@@ -52,8 +52,8 @@ angular.module('carApp')
         self.listenTo = function (property, callback) {
             //look up the callbacks of the property and add a new callback.
             settings[property].callbacks.push(callback);
-            //TODO
-            // callback(settings[property]);
+            //go ahead and call the listener.  In every case we were calling it manually.
+            callback(settings[property].value);
         };
         return self;
     });

@@ -2,7 +2,6 @@ angular.module('carApp')
     .directive('tmbDashboard', ['settings', function (settings) {
         return {
             controller: function ($scope) {
-                $scope.uistyle = settings.uistyle.id;
                 settings.listenTo('uistyle', function(uistyle) {
                     $scope.uistyle = uistyle.id;
                 });

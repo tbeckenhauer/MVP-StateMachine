@@ -1,7 +1,6 @@
 angular.module('carApp')
     .controller('carController', ['$scope', 'carStateMachine', 'settings', function($scope, carState, settings) {
 
-        $scope.selectedUistyle = settings.uistyle;
         settings.listenTo('uistyle', function(uistyle) {
             $scope.selectedUistyle = uistyle;
         });

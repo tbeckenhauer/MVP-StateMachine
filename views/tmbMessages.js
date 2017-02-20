@@ -19,8 +19,7 @@ angular.module('carApp')
                         error: {color: 'red-800'}
                     }
                 };
-                $scope.uistyle = settings.uistyle.id;
-                $scope.messageLevel = classMap[$scope.uistyle];
+
                 settings.listenTo('uistyle', function (uistyle) {
                     $scope.uistyle = uistyle.id;
                     $scope.messageLevel = classMap[$scope.uistyle]
