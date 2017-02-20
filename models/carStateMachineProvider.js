@@ -15,22 +15,43 @@ angular.module('carApp')
                             this.info();
                             break;
                         case 'insertKeys':
-                            this.set('stopped');
+                            this.set('idling');
                             break;
                     }
                 }
             }
         }, true);
 
-        carStateMachineProvider.registerState('stopped', {
+        carStateMachineProvider.registerState('reverse', {
             handleInput: {
                 value: function(command) {
                     switch (command) {
-                        case 'accelerate':
-                            this.set('driving');
+                        case 'deAccelerate':
+                            this.info();
                             break;
+                        case 'accelerate':
+                            this.set('idling');
+                            break;
+                        case 'removeKeys':
+                            this.warn(command);
+                            break;
+                        case 'insertKeys':
+                            this.warn(command);
+                            break;
+                    }
+                }
+            }
+        });
+
+        carStateMachineProvider.registerState('idling', {
+            handleInput: {
+                value: function(command) {
+                    switch (command) {
                         case 'deAccelerate':
                             this.set('reverse');
+                            break;
+                        case 'accelerate':
+                            this.set('1stGear');
                             break;
                         case 'removeKeys':
                             this.set('parked');
@@ -43,15 +64,15 @@ angular.module('carApp')
             }
         });
 
-        carStateMachineProvider.registerState('driving', {
+        carStateMachineProvider.registerState('1stGear', {
             handleInput: {
                 value: function(command) {
                     switch (command) {
-                        case 'accelerate':
-                            this.info();
-                            break;
                         case 'deAccelerate':
-                            this.set('stopped');
+                            this.set('idling');
+                            break;
+                        case 'accelerate':
+                            this.set('2ndGear');
                             break;
                         case 'removeKeys':
                             this.warn(command);
@@ -64,15 +85,15 @@ angular.module('carApp')
             }
         });
 
-        carStateMachineProvider.registerState('reverse', {
+        carStateMachineProvider.registerState('2ndGear', {
             handleInput: {
                 value: function(command) {
                     switch (command) {
-                        case 'accelerate':
-                            this.set('stopped');
-                            break;
                         case 'deAccelerate':
-                            this.info();
+                            this.set('1stGear');
+                            break;
+                        case 'accelerate':
+                            this.set('3rdGear');
                             break;
                         case 'removeKeys':
                             this.warn(command);
@@ -85,6 +106,71 @@ angular.module('carApp')
             }
         });
 
+        carStateMachineProvider.registerState('3rdGear', {
+            handleInput: {
+                value: function(command) {
+                    switch (command) {
+                        case 'deAccelerate':
+                            this.set('2ndGear');
+                            break;
+                        case 'accelerate':
+                            this.set('4thGear');
+                            break;
+                        case 'removeKeys':
+                            this.warn(command);
+                            break;
+                        case 'insertKeys':
+                            this.warn(command);
+                            break;
+                    }
+                }
+            }
+        });
+
+        carStateMachineProvider.registerState('4thGear', {
+            handleInput: {
+                value: function(command) {
+                    switch (command) {
+                        case 'deAccelerate':
+                            this.set('3rdGear');
+                            break;
+                        case 'accelerate':
+                            this.set('warp9');
+                            break;
+                        case 'removeKeys':
+                            this.warn(command);
+                            break;
+                        case 'insertKeys':
+                            this.warn(command);
+                            break;
+                    }
+                }
+            }
+        });
+
+        carStateMachineProvider.registerState('warp9', {
+            handleInput: {
+                value: function(command) {
+                    switch (command) {
+                        case 'deAccelerate':
+                            this.set('4thGear');
+                            break;
+                        case 'accelerate':
+                            this.log({
+                                level: 'error',
+                                item: 'I am givin \'er all shes got Captian!'
+                            });
+                            break;
+                        case 'removeKeys':
+                            this.warn(command);
+                            break;
+                        case 'insertKeys':
+                            this.warn(command);
+                            break;
+                    }
+                }
+            }
+        });
     }])
 
     .provider('carStateMachine', [function() {
